@@ -2,7 +2,7 @@
 #This assignment should be completed in RStudioCloud
 #For full credit, provide answers for at least 6/9 questions
 
-#List names of students collaborating with: 
+#List names of students collaborating with: Brandon Tran
 
 ### SETUP: RUN THIS BEFORE STARTING ----------
 
@@ -28,7 +28,7 @@ ds_combined <- bind_rows(ds1, ds2, ds3)
 #Make your repository public and paste the link here:
 
 #ANSWER
-#YOUR GITHUB LINK: 
+#YOUR GITHUB LINK: https://github.com/btran015/259-tidying-automation-homework.git 
 
 ### Question 2 ---------- 
 
@@ -36,16 +36,37 @@ ds_combined <- bind_rows(ds1, ds2, ds3)
 #(Yes, Vroom does this automatically but practice doing it with a loop)
 #If you did this correctly, it should look the same as ds_combined created above
 
+ds_loop <- read_tsv(paths[1:3], col_names = c("Film", "Race", "Female", "Male"))
+ds_loop$path <- "path" 
+ds <- ds_loop %>% filter(FALSE)
+
+for (path in file_names) {
+  temp_ds <- read_tsv(paths, col_names = c("Film", "Race", "Female", "Male"))
+  temp_ds$path <- path 
+  ds_loop <- bind_rows(ds_loop, temp_ds)
+}
+#Is this supposed to be swapping out "file" in the example (01-for-loops.R) with "paths"? In other words, is this an arbitrary file type we're assigning or is it a specifc format between "file" and "path"? 
+
+
 ### Question 3 ----------
 
 #Use map with paths to read in the data to a single tibble called ds_map
 #If you did this correctly, it should look the same as ds_combined created above
+
+file_names <- list.files(paths[1:3], pattern = ".txt",full.names = T)
+ds_map <- map_dfr(file_names, ~ read_tsv(paths[1:3], col_names = c("Film", "Race", "Female", "Male")) %>% mutate(file = paths[1:3]))
+
+??file_names
+
 
 ### Question 4 ----------
 
 #The data are in a wider-than-ideal format. 
 #Use pivot_longer to reshape the data so that sex is a column with values male/female and words is a column
 #Use ds_combined or one of the ones you created in Question 2 or 3, and save the output to ds_longer
+
+ds_longer <- pivot_longer(ds_combined, cols = names_to = "sex", values_to = "female" "male")
+
 
 ### Question 5 ----------
 
@@ -54,6 +75,11 @@ ds_combined <- bind_rows(ds1, ds2, ds3)
 #Merge it into ds_longer and then create a new column that expresses the words spoken as a percentage of the total
 total_words <- tibble(Film =  c("The Fellowship Of The Ring", "The Two Towers","The Return Of The King"),
                       Total = c(177277, 143436, 134462))
+
+ds_longer <- merge(total_words) %>% ds_combined = colnames("word count") = c(177277, 143436, 134462)) )
+ds_longer <- ds_longer %>% 
+  add_column(proportion = ((177277/(177277 + 143436 + 134462)) (143436/(177277 + 143436 + 134462)) (134462/(177277 + 143436 + 134462))
+
 
 ### Question 6 ----------
 #The function below creates a graph to compare the words spoken by race/sex for a single film
@@ -67,10 +93,29 @@ words_graph <- function(df) {
   print(p)
 }
 
+#nothing is showing in my environment after running - the console shows (+) vs (>)
+
+x <- c("The Fellowship Of The Ring", "The Two Towers","The Return Of The King")
+for (film in x) {
+  print(paste0("proportion", ds_longer))
+}
+
 ### Question 7 ----------
 
 #Apply the words_graph function again, but this time
 #use split and map to apply the function to each film separately
+
+words_graph <- function(df) {
+  p <- ggplot(df, aes(x = Race, y = Words, fill = Sex)) + 
+    geom_bar(stat = "identity", position = "dodge") + 
+    ggtitle(df$Film) + theme_minimal()
+  print(p)
+}
+#still wont run?
+
+ds_film <- split(ds_combined, ds_combined$Film)
+map(ds_film, ~ lm(x_sum ~ y_sum, data = .x)) 
+
 
 ### Question 8 ---------- 
 
@@ -79,7 +124,23 @@ words_graph <- function(df) {
 #First, get the data formatted in the correct way
 #From ds_longer, create a new tibble "ds_wider" that has columns for words for each race and percentage for each race
 
+ds_wider <- pivot_wider(ds_longer, cols = names_to = "race", values_to = "[????]")
+write.csv(ds_wider, "output.csv")
+#not sure what values to extract for the percentage based on each race.
+
+
 ### Question 9 ---------
 
 #Using your new "ds_wider" tibble, write the three data files using either a for loop or map
 #The files should be written to "data_cleaned" and should be named by film title
+
+ds$film <- "film" 
+data_cleaned <- ds_wider %>% filter(FALSE)
+for (film in ds_wider) {
+  data_cleaned <- read.csv("output")
+
+  ds$film <- ds_wider$film 
+  data_cleaned <- bind_rows(ds, ds_wider)
+}
+
+
